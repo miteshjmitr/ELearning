@@ -1,0 +1,20 @@
+<h2>Create Assignment</h2>
+
+<%= form_with model: @assignment do |f| %>
+  <div>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </div>
+
+  <div>
+    <%= f.label :student_id, "Assign to Student" %>
+    <%= f.collection_select :student_id, @students, :id, :email %>
+  </div>
+
+  <div>
+    <%= f.label :description %>
+    <%= f.text_area :description, rows: 6 %>
+  </div>
+
+  <%= f.submit "Create Assignment" %>
+<% end %>

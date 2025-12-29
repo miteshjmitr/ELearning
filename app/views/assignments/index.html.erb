@@ -1,0 +1,69 @@
+<%= render partial: "navbar/index" %>
+<h2>My Assignments</h2> 
+<% if current_user.teacher? %>
+<%= link_to "New Assignment", new_assignment_path, class: "btn btn-primary" %>
+<% end %>
+<% if @assignments.empty? %>
+  <div class="row">
+  <p>No assignments assigned yet.</p>
+  </div>
+<% else %>
+    <table  class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Assignment Name</th>
+                <th>Student Email</th>
+                <th>Assignment Description</th>
+                <th>Actions</th>
+                <% if current_user.student? %>
+                    <th>Grade</th>
+                <% else %>
+                    <th>Grade Submission</th>
+                <% end %>
+            </tr>
+        </thead>
+    <% @assignments.each do |assignment| %>
+        <tr>
+            <td>
+                <%= assignment.title %>
+            </td>
+            <td><%= assignment.student.email %></td>
+            <td><%= assignment.description %></td>
+            <% if current_user.student? %>
+                <td>
+                    <% if assignment.submission.present? %>
+                        Submitted
+                        
+                    <% else %>
+                        <%= link_to "Submit Assignment", new_assignment_submission_path(assignment), class: "btn btn-success" %>
+                    <% end %>
+                </td>
+                <td>
+                    <% if assignment.submission&.grade.present? %>
+                            <%= assignment.submission.grade %>
+                        <% else %>
+                            Not Graded Yet
+                        <% end %>
+                </td>
+            <% else %>
+                <td>
+                    <% if assignment.submission.present? %>
+                        Submitted
+                        
+                    <% else %>
+                        Not Submitted Yet
+                    <% end %>
+                </td>
+                <td><% if current_user.teacher? && assignment.submission.present? %>
+                        <%= form_with model: assignment.submission do |f| %>
+                        <%= f.select :grade, %w[A B C D E F] %>
+                        <%= f.submit "Grade" %> 
+                        <% end %>
+                    <% end %>
+                </td>
+            <% end %>
+            
+        </tr>
+    <% end %>
+    </table>
+<% end %>

@@ -1,0 +1,25 @@
+<h3><%= @assignment.title %></h3>
+<p><%= @assignment.content %></p>
+
+<hr>
+
+<% if @submission.present? %>
+  <h4>Student Submission</h4>
+  <p><%= @submission.content %></p>
+
+  <% if current_user.teacher? %>
+    <h4>Grade Submission</h4>
+
+    <%= form_with model: @submission, local: true do |f| %>
+      <%= f.label :grade %><br>
+      <%= f.select :grade, %w[A B C D E F] %>
+      <%= f.submit "Submit Grade" %>
+    <% end %>
+  <% end %>
+
+  <% if @submission.grade.present? %>
+    <p><strong>Grade:</strong> <%= @submission.grade %></p>
+  <% end %>
+<% else %>
+  <p>No submission yet.</p>
+<% end %>
